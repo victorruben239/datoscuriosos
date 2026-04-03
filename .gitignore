@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Environment Variables (Seguridad: nunca subir claves)
+.env
+client_secrets.json
+token.pickle
+*.pickle
+
+# Logs (Para evitar conflictos constantes de cambios en archivos de texto)
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
