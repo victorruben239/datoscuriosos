@@ -1,0 +1,45 @@
+name: Bot Curiosidades FB
+
+on:
+  schedule:
+    # Se ejecuta cada 6 horas (ej. 00:00, 06:00, 12:00, 18:00)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña Actions
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write # Permiso necesario para guardar la DB actualizada
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: |
+          pip install -r requirements.txt
+
+      - name: Ejecutar Bot
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          ID_PAGINA_CURIOSIDADES: ${{ secrets.ID_PAGINA_CURIOSIDADES }}
+        run: python curiosidades.py
+
+      - name: Guardar cambios en DB
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Actualizar base de datos de noticias [skip ci]"
+          file_pattern: "*.db"
+          commit_user_name: "Bot Curiosidades"
+          commit_user_email: "actions@github.com"
+          push_options: '--force'  # Obliga a GitHub a aceptar el archivo de la DB
+          skip_dirty_check: false
+          branch: main
